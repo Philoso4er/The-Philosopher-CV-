@@ -168,10 +168,6 @@ export default function PhilosopherPortfolio() {
             left: `${50 + mousePosition.x * 0.01}%`,
             bottom: `${10 + scrollY * 0.03}%`,
           }}
-        />0.3) 0%, transparent 70%)',
-            left: `${50 + mousePosition.x * 0.01}%`,
-            bottom: `${10 + scrollY * 0.03}%`,
-          }}
         />
 
         {/* Floating Particles */}
@@ -396,15 +392,15 @@ export default function PhilosopherPortfolio() {
         <section id="hire" className="py-32 px-8">
           <div className="max-w-4xl mx-auto">
             <div className="relative p-12 rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 backdrop-blur-xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-600/10 via-fuchsia-600/10 to-pink-600/10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600/10 via-teal-600/10 to-cyan-600/10" />
               
               <div className="relative text-center">
-                <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
-                  Let's Build the Future
+                <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-300 bg-clip-text text-transparent">
+                  Let's Build Something Great
                 </h2>
                 
                 <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-                  Ready to transform your vision into reality? Connect and let's explore the possibilities.
+                  Ready to bring your vision to life? Let's connect and explore what we can create together.
                 </p>
 
                 <div className="space-y-4 mb-12">
