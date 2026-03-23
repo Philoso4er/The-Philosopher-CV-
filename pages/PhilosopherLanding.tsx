@@ -1,513 +1,376 @@
-
 import React, { useState, useEffect } from 'react';
-import { Github, Twitter, Send, Briefcase, Users, PenTool, Handshake, Search, Palette, Code, CheckCircle, Clock, Globe, Zap, MessageSquare, Mail, ExternalLink, Gift } from '../components/icons';
-import { Skill } from '../types';
 
-const skills: Skill[] = [
-    {
-      icon: <MessageSquare className="w-8 h-8" />,
-      title: "Customer Service & Product Mastery",
-      done: [
-        "Answered hundreds of technical questions about products I researched in-depth",
-        "Reduced customer confusion by creating clear, simple explanations",
-        "Maintained high satisfaction ratings through accurate, helpful responses"
-      ],
-      get: [
-        "Someone who deeply researches YOUR product and becomes an instant expert",
-        "Clear, professional communication that builds customer trust",
-        "24/7 availability—no timezone barriers"
-      ]
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Community Moderation & Management",
-      done: [
-        "Moderated active Web3 communities, maintaining positive environments",
-        "Handled conflicts diplomatically while enforcing guidelines",
-        "Engaged members daily, answering questions and fostering discussions"
-      ],
-      get: [
-        "A community that feels heard, supported, and valued",
-        "Reduced workload for your core team",
-        "Someone who represents your brand professionally at all hours"
-      ]
-    },
-    {
-      icon: <PenTool className="w-8 h-8" />,
-      title: "Copywriting & Content Creation",
-      done: [
-        "Written sales copy, marketing materials, and product documentation",
-        "Created engaging social media content for Web3 projects",
-        "Developed clear messaging that converts browsers into customers"
-      ],
-      get: [
-        "Professional copy that speaks to your audience",
-        "Content that educates and sells simultaneously",
-        "Fast turnaround without sacrificing quality"
-      ]
-    },
-    {
-      icon: <Handshake className="w-8 h-8" />,
-      title: "Collaboration Management",
-      done: [
-        "Coordinated partnerships between projects and communities",
-        "Managed cross-functional communications",
-        "Facilitated successful collaborations from outreach to execution"
-      ],
-      get: [
-        "Organized, proactive partnership management",
-        "Clear communication across all stakeholders",
-        "More partnerships, less chaos"
-      ]
-    },
-    {
-      icon: <Search className="w-8 h-8" />,
-      title: "Research & Analysis (Web3 Focus)",
-      done: [
-        "Conducted deep-dive research on blockchain projects for alpha calling",
-        "Analyzed tokenomics, team credentials, and market positioning",
-        "Provided clear, actionable insights to community members"
-      ],
-      get: [
-        "Thorough competitive analysis for your project",
-        "Market intelligence that informs strategy",
-        "Someone who understands Web3 inside and out"
-      ]
-    },
-    {
-      icon: <Palette className="w-8 h-8" />,
-      title: "Creative Work (Design & Visual Content)",
-      done: [
-        "Created graphics and visual content for social media",
-        "Designed simple marketing materials",
-        "Developed visual assets that communicate ideas quickly"
-      ],
-      get: [
-        "Basic design work without hiring a dedicated designer",
-        "Quick visual solutions for everyday needs",
-        "Consistent brand representation"
-      ]
-    },
-    {
-      icon: <Code className="w-8 h-8" />,
-      title: "Basic Web Development",
-      done: [
-        "Built simple web applications using HTML, CSS, JavaScript",
-        "Created functional prototypes and landing pages",
-        "Solved technical problems with code when needed"
-      ],
-      get: [
-        "Someone who can handle basic technical tasks",
-        "Quick fixes without waiting on developers",
-        "Understanding of technical concepts to bridge communication gaps"
-      ]
-    }
-];
-
-interface SkillCardProps {
-  skill: Skill;
-  index: number;
-}
-
-const SkillCard: React.FC<SkillCardProps> = ({ skill }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    
-    return (
-      <div 
-        className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 border border-slate-700 hover:border-emerald-500 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 cursor-pointer"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <div className="flex items-start gap-4">
-          <div className="text-emerald-400 flex-shrink-0">
-            {skill.icon}
-          </div>
-          <div className="flex-1">
-            <h3 className="text-xl font-bold text-white mb-3">{skill.title}</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <p className="text-emerald-400 font-semibold mb-2 text-sm">What I've Done:</p>
-                <ul className="space-y-2">
-                  {skill.done.slice(0, isExpanded ? undefined : 2).map((item, i) => (
-                    <li key={i} className="text-slate-300 text-sm flex gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              {isExpanded && (
-                <div className="animate-fade-in-up">
-                  <p className="text-amber-400 font-semibold mb-2 text-sm">What You Get:</p>
-                  <ul className="space-y-2">
-                    {skill.get.map((item, i) => (
-                      <li key={i} className="text-slate-300 text-sm flex gap-2">
-                        <Zap className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-            
-            <button className="text-emerald-400 text-sm mt-3 hover:text-emerald-300 transition-colors">
-              {isExpanded ? '↑ Show Less' : '↓ See What You Get'}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-};
-
-export default function PhilosopherLanding() {
-  const [isVisible, setIsVisible] = useState(false);
-  
-  // Referral links - easily editable. Kept empty as per original code.
-  const [referralLinks] = useState<Array<{ title: string; description: string; url: string; category: string; }>>([]);
+export default function PhilosopherPortfolio() {
+  const [activeSkill, setActiveSkill] = useState<number | null>(null);
+  const [scrollY, setScrollY] = useState(0);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   useEffect(() => {
-    setIsVisible(true);
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const skills = [
+    {
+      title: "AI Content Creation",
+      icon: "🤖",
+      gradient: "from-violet-500 to-purple-600",
+      description: "Expert in AI-powered video, text, and multimedia content creation",
+      details: [
+        "AI-generated video content and editing",
+        "Advanced text generation and copywriting with AI tools",
+        "Multi-modal content creation workflows",
+        "Prompt engineering for optimal AI outputs"
+      ]
+    },
+    {
+      title: "Graphic Design Excellence",
+      icon: "🎨",
+      gradient: "from-pink-500 to-rose-600",
+      description: "Professional design creating stunning visuals that captivate audiences",
+      details: [
+        "Brand identity and logo design",
+        "Social media graphics and marketing materials",
+        "UI/UX design for digital products",
+        "Motion graphics and animations"
+      ]
+    },
+    {
+      title: "Game Development",
+      icon: "🎮",
+      gradient: "from-blue-500 to-cyan-600",
+      description: "Creating engaging games from concept to deployment",
+      details: [
+        "Game mechanics and level design",
+        "Unity and Unreal Engine development",
+        "Mobile and web-based games",
+        "Interactive storytelling experiences"
+      ]
+    },
+    {
+      title: "Web Development",
+      icon: "💻",
+      gradient: "from-emerald-500 to-teal-600",
+      description: "Building modern web applications and responsive websites",
+      details: [
+        "Full-stack web application development",
+        "React, Next.js, and modern frameworks",
+        "Responsive design and mobile-first approach",
+        "E-commerce and SaaS platforms"
+      ]
+    },
+    {
+      title: "Crypto Trading Expertise",
+      icon: "📈",
+      gradient: "from-amber-500 to-orange-600",
+      description: "Deep market analysis and alpha calling in crypto markets",
+      details: [
+        "Technical and fundamental analysis",
+        "NFT market research and alpha calls",
+        "Memecoin trend identification",
+        "Portfolio strategy and risk management"
+      ]
+    },
+    {
+      title: "AI Prompt Engineering",
+      icon: "✨",
+      gradient: "from-indigo-500 to-blue-600",
+      description: "Master of crafting prompts that unlock AI potential",
+      details: [
+        "Advanced prompt crafting for ChatGPT, Claude, and more",
+        "Chain-of-thought prompting techniques",
+        "Custom GPT and assistant creation",
+        "Workflow automation with AI tools"
+      ]
+    },
+    {
+      title: "Customer Success",
+      icon: "🎯",
+      gradient: "from-green-500 to-emerald-600",
+      description: "Expert product knowledge and customer support excellence",
+      details: [
+        "Deep product research and documentation",
+        "24/7 multi-timezone support coverage",
+        "Technical troubleshooting and solutions",
+        "Customer satisfaction optimization"
+      ]
+    },
+    {
+      title: "Community Leadership",
+      icon: "👥",
+      gradient: "from-purple-500 to-pink-600",
+      description: "Building and nurturing engaged Web3 communities",
+      details: [
+        "Discord and Telegram community management",
+        "Conflict resolution and moderation",
+        "Engagement strategies and growth",
+        "Brand ambassador programs"
+      ]
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-lg border-b border-slate-700 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-            The Philosopher
-          </div>
-          <div className="flex gap-4">
-            <a href="https://x.com/Lil_Osopher" target="_blank" rel="noopener noreferrer"
-               className="hover:text-emerald-400 transition-colors">
-              <Twitter className="w-5 h-5" />
-            </a>
-            <a href="mailto:deebestsolution@gmail.com"
-               className="hover:text-emerald-400 transition-colors">
-              <Mail className="w-5 h-5" />
-            </a>
-            <a href="https://t.me/DeeChosenOne" target="_blank" rel="noopener noreferrer" 
-               className="hover:text-emerald-400 transition-colors">
-              <Send className="w-5 h-5" />
-            </a>
-            <a href="https://github.com/Philoso4er" target="_blank" rel="noopener noreferrer"
-               className="hover:text-emerald-400 transition-colors">
-              <Github className="w-5 h-5" />
-            </a>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20" />
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: `radial-gradient(circle at ${50 + scrollY * 0.05}% ${50 + scrollY * 0.03}%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)`,
+          }}
+        />
+      </div>
 
-      {/* Hero Section */}
-      <section id="hero" className="pt-32 pb-20 px-6">
-        <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="inline-block mb-4">
-            <span className="bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold border border-emerald-500/30">
-              🟢 Available Now | All Timezones | Trial Work Welcome
-            </span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-            The Philosopher
-          </h1>
-          
-          <p className="text-2xl md:text-3xl text-slate-300 mb-4">
-            Your Remote Product Expert & Problem Solver
-          </p>
-          
-          <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-2xl p-6 mt-8 backdrop-blur-sm">
-            <p className="text-xl md:text-2xl text-emerald-400 font-semibold">
-              My Superpower:
-            </p>
-            <p className="text-lg md:text-xl text-white mt-2">
-              I can answer any specific question about your product or project—accurately, clearly, and confidently.
-            </p>
-          </div>
-
-          <div className="mt-12 flex flex-wrap justify-center gap-4">
-            <a href="#hire" className="bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 transform hover:scale-105">
-              Hire Me Now
-            </a>
-            <a href="#skills" className="bg-slate-800 px-8 py-4 rounded-xl font-bold text-lg border border-slate-600 hover:border-emerald-500 transition-all duration-300">
-              See My Skills
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Hire Me */}
-      <section id="why" className="py-20 px-6 bg-slate-800/50">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-center">
-            Why Hire Me? <span className="text-slate-400 text-2xl">(The 30-Second Pitch)</span>
-          </h2>
-          
-          <p className="text-xl text-slate-300 mb-8 text-center max-w-3xl mx-auto">
-            You need someone who can <span className="text-emerald-400 font-semibold">explain your product to anyone, anytime</span>—whether it's to customers, investors, or your team. That's exactly what I do.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-slate-700 to-slate-800 p-6 rounded-xl border border-slate-600">
-              <CheckCircle className="w-8 h-8 text-emerald-400 mb-3" />
-              <h3 className="text-xl font-bold mb-2">5+ Years Experience</h3>
-              <p className="text-slate-300">Making complex projects simple and accessible</p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-slate-700 to-slate-800 p-6 rounded-xl border border-slate-600">
-              <Briefcase className="w-8 h-8 text-emerald-400 mb-3" />
-              <h3 className="text-xl font-bold mb-2">Proven Track Record</h3>
-              <p className="text-slate-300">Customer service, community management, content creation</p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-slate-700 to-slate-800 p-6 rounded-xl border border-slate-600">
-              <Clock className="w-8 h-8 text-emerald-400 mb-3" />
-              <h3 className="text-xl font-bold mb-2">Work Your Hours</h3>
-              <p className="text-slate-300">Truly flexible across all timezones</p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-slate-700 to-slate-800 p-6 rounded-xl border border-slate-600">
-              <Zap className="w-8 h-8 text-emerald-400 mb-3" />
-              <h3 className="text-xl font-bold mb-2">Try Before You Buy</h3>
-              <p className="text-slate-300">I'll work initially for free to prove my value</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Skills Section */}
-      <section id="skills" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-            What I Actually Do
-          </h2>
-          <p className="text-xl text-slate-400 mb-12 text-center">Real Skills, Real Results</p>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {skills.map((skill, index) => (
-              <SkillCard key={index} skill={skill} index={index} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Remote Work Section */}
-      <section id="remote" className="py-20 px-6 bg-slate-800/50">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            Remote Work = My Default Mode
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              "Fully self-directed—no hand-holding needed",
-              "Own equipment & reliable internet",
-              "Experienced with remote collaboration tools",
-              "Work independently or integrate seamlessly with teams",
-              "Clear communicator across written and video channels"
-            ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3 bg-slate-700/50 p-4 rounded-lg">
-                <Globe className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-1" />
-                <p className="text-slate-200">{item}</p>
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Navigation */}
+        <nav className="fixed top-0 w-full backdrop-blur-xl bg-black/30 border-b border-white/10 z-50">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="flex justify-between items-center">
+              <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                THE PHILOSOPHER
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Education */}
-      <section id="education" className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            Education That Shows Versatility
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-xl border border-slate-700">
-              <h3 className="text-2xl font-bold text-emerald-400 mb-3">Bachelor of Engineering</h3>
-              <p className="text-xl text-white mb-4">Petroleum Engineering</p>
-              <div className="flex flex-wrap gap-2">
-                <span className="bg-slate-700 px-3 py-1 rounded-full text-sm">Analytical Thinking</span>
-                <span className="bg-slate-700 px-3 py-1 rounded-full text-sm">Problem-Solving</span>
-                <span className="bg-slate-700 px-3 py-1 rounded-full text-sm">Systems Approach</span>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-xl border border-slate-700">
-              <h3 className="text-2xl font-bold text-cyan-400 mb-3">Certified Massage Therapist</h3>
-              <p className="text-xl text-white mb-4">Professional Certification</p>
-              <div className="flex flex-wrap gap-2">
-                <span className="bg-slate-700 px-3 py-1 rounded-full text-sm">Client Service</span>
-                <span className="bg-slate-700 px-3 py-1 rounded-full text-sm">Attention to Detail</span>
-                <span className="bg-slate-700 px-3 py-1 rounded-full text-sm">People Skills</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How to Hire Me */}
-      <section id="hire" className="py-20 px-6 bg-gradient-to-br from-emerald-900/20 to-cyan-900/20">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-center">
-            How to Hire Me <span className="text-emerald-400">(It's This Easy)</span>
-          </h2>
-          
-          <div className="space-y-6 mb-12">
-            {[
-              { step: 1, text: "Message me on any platform below" },
-              { step: 2, text: "Tell me about your product/project" },
-              { step: 3, text: "Give me a test task (I'll do it free to prove myself)" },
-              { step: 4, text: "See the quality firsthand" },
-              { step: 5, text: "Decide if you want to continue" }
-            ].map((item) => (
-              <div key={item.step} className="flex items-start gap-4 bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                <div className="bg-gradient-to-br from-emerald-500 to-cyan-500 w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">
-                  {item.step}
-                </div>
-                <p className="text-xl text-slate-200 mt-2">{item.text}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center bg-slate-800 p-8 rounded-2xl border-2 border-emerald-500">
-            <p className="text-2xl font-bold text-emerald-400 mb-6">
-              No contracts. No commitments. No risk.
-            </p>
-            
-            <div className="space-y-4">
-              <a href="mailto:deebestsolution@gmail.com"
-                 className="flex items-center justify-center gap-3 bg-gradient-to-r from-red-500 to-orange-500 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 transform hover:scale-105">
-                <Mail className="w-6 h-6" />
-                Email: deebestsolution@gmail.com
-              </a>
-              
-              <a href="https://t.me/DeeChosenOne" target="_blank" rel="noopener noreferrer"
-                 className="flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
-                <Send className="w-6 h-6" />
-                Telegram (Fastest Response)
-              </a>
-              
-              <a href="https://x.com/Lil_Osopher" target="_blank" rel="noopener noreferrer"
-                 className="flex items-center justify-center gap-3 bg-slate-700 px-8 py-4 rounded-xl font-bold text-lg border border-slate-600 hover:border-cyan-500 transition-all duration-300">
-                <Twitter className="w-6 h-6" />
-                Twitter/X: @Lil_Osopher
-              </a>
-              
-              <a href="https://github.com/Philoso4er" target="_blank" rel="noopener noreferrer"
-                 className="flex items-center justify-center gap-3 bg-slate-700 px-8 py-4 rounded-xl font-bold text-lg border border-slate-600 hover:border-emerald-500 transition-all duration-300">
-                <Github className="w-6 h-6" />
-                GitHub: Philoso4er
-              </a>
-            </div>
-
-            <div className="mt-8 pt-8 border-t border-slate-700">
-              <p className="text-slate-300 mb-3">Community Involvement:</p>
-              <div className="space-y-2">
-                <a href="https://x.com/TheDen_Alpha" target="_blank" rel="noopener noreferrer"
-                   className="block text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
-                  The Den Alpha - Web3 Research Community
+              <div className="flex gap-6 items-center">
+                <a href="https://x.com/Lil_Osopher" target="_blank" rel="noopener noreferrer"
+                   className="text-gray-400 hover:text-cyan-400 transition-all duration-300 hover:scale-110">
+                  @Lil_Osopher
                 </a>
-                <a href="https://t.me/deechosenones" target="_blank" rel="noopener noreferrer"
-                   className="block text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
-                  Dee Chosen Ones - Telegram Community
+                <a href="https://t.me/DeeChosenOne" target="_blank" rel="noopener noreferrer"
+                   className="text-gray-400 hover:text-blue-400 transition-all duration-300 hover:scale-110">
+                  @DeeChosenOne
+                </a>
+                <a href="#hire"
+                   className="px-6 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 hover:scale-105">
+                  Contact
                 </a>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </nav>
 
-      {/* What People Need */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            What People Need <span className="text-slate-400">(And What I Provide)</span>
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              { need: "Customer Questions?", provide: "I research and answer them accurately" },
-              { need: "Coverage Gaps?", provide: "I work your timezone—any timezone" },
-              { need: "Content Bottleneck?", provide: "I write, design, and create" },
-              { need: "Community Chaos?", provide: "I moderate and engage professionally" },
-              { need: "Product Confusion?", provide: "I make complex things simple" }
-            ].map((item, i) => (
-              <div key={i} className="bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-slate-700">
-                <p className="text-lg font-bold text-amber-400 mb-2">{item.need}</p>
-                <p className="text-slate-300">{item.provide}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 rounded-2xl p-8">
-            <p className="text-2xl md:text-3xl font-bold text-white">
-              I'm the versatile remote team member who fills gaps, solves problems, and makes your life easier—starting today.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Referral Links Section */}
-      {referralLinks.length > 0 && (
-        <section className="py-20 px-6 bg-slate-800/50">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <Gift className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Recommended Links
-              </h2>
-              <p className="text-xl text-slate-400">
-                Platforms and tools I personally use and recommend
-              </p>
+        {/* Hero Section */}
+        <section className="min-h-screen flex items-center justify-center px-6 pt-20">
+          <div className="max-w-5xl mx-auto text-center">
+            <div className="mb-6 inline-block">
+              <span className="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 backdrop-blur-sm text-cyan-400 font-semibold text-sm">
+                🌍 Remote | UK-Based | Available Globally
+              </span>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-6">
-              {referralLinks.map((link, index) => (
-                <a
-                  key={index}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">
-                      {link.title}
-                    </h3>
-                    <ExternalLink className="w-5 h-5 text-slate-400 group-hover:text-emerald-400 transition-colors" />
-                  </div>
-                  
-                  {link.category && (
-                    <span className="inline-block bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-semibold mb-3">
-                      {link.category}
-                    </span>
-                  )}
-                  
-                  <p className="text-slate-300 text-sm">
-                    {link.description}
-                  </p>
-                </a>
-              ))}
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-pulse">
+              Digital Innovation Expert
+            </h1>
+            
+            <p className="text-2xl md:text-3xl text-gray-400 mb-8 max-w-3xl mx-auto">
+              AI-Powered Creator • Web3 Specialist • Full-Stack Developer
+            </p>
+
+            <div className="relative p-8 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 backdrop-blur-lg mb-12">
+              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-3xl blur opacity-20" />
+              <div className="relative">
+                <p className="text-xl md:text-2xl text-white font-semibold mb-3">
+                  Transform Your Vision Into Reality
+                </p>
+                <p className="text-gray-300 text-lg">
+                  From AI-generated content to blockchain solutions, I deliver cutting-edge digital experiences that drive results. Ready to start immediately with flexible hours and trial projects.
+                </p>
+              </div>
             </div>
 
-            <div className="mt-8 text-center">
-              <p className="text-slate-400 text-sm">
-                💡 These are referral links - using them supports my work at no extra cost to you
-              </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <button 
+                onClick={() => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' })}
+                className="group px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-lg transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/50 hover:scale-105 cursor-pointer">
+                <span className="flex items-center gap-2">
+                  Explore Skills
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </span>
+              </button>
+              <button 
+                onClick={() => document.getElementById('hire')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 rounded-xl border border-white/30 font-bold text-lg transition-all duration-300 hover:bg-white/10 hover:border-white/50 backdrop-blur-sm cursor-pointer">
+                Hire Me Now
+              </button>
             </div>
           </div>
         </section>
-      )}
 
-      {/* Footer */}
-      <footer className="py-12 px-6 bg-slate-900 border-t border-slate-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-slate-400 mb-4">Available for: Full-time • Part-time • Contract • Freelance • Trial Projects</p>
-          <p className="text-slate-500 text-sm">© 2025 The Philosopher. Ready to deliver value from day one.</p>
-        </div>
-      </footer>
+        {/* Skills Grid */}
+        <section id="skills" className="py-32 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-20">
+              <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+                Expertise Portfolio
+              </h2>
+              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                Cutting-edge skills across AI, blockchain, development, and design
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {skills.map((skill, index) => (
+                <div
+                  key={index}
+                  className="group relative"
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  onClick={() => setActiveSkill(activeSkill === index ? null : index)}
+                >
+                  {/* Glow Effect */}
+                  {hoveredCard === index && (
+                    <div className={`absolute -inset-1 bg-gradient-to-r ${skill.gradient} rounded-2xl blur-xl opacity-50 transition-opacity duration-300`} />
+                  )}
+                  
+                  {/* Card */}
+                  <div className={`relative p-8 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border transition-all duration-500 cursor-pointer ${
+                    activeSkill === index 
+                      ? 'border-white/30 scale-105' 
+                      : 'border-white/10 hover:border-white/20'
+                  }`}>
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className={`text-5xl transform transition-all duration-500 ${
+                        activeSkill === index ? 'scale-125 rotate-12' : 'group-hover:scale-110'
+                      }`}>
+                        {skill.icon}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className={`text-2xl font-bold mb-2 bg-gradient-to-r ${skill.gradient} bg-clip-text text-transparent`}>
+                          {skill.title}
+                        </h3>
+                        <p className="text-gray-400 text-sm">
+                          {skill.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Expandable Details */}
+                    <div className={`overflow-hidden transition-all duration-500 ${
+                      activeSkill === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    }`}>
+                      <div className="pt-6 border-t border-white/10">
+                        <ul className="space-y-3">
+                          {skill.details.map((detail, i) => (
+                            <li key={i} className="flex items-start gap-3 text-gray-300 text-sm">
+                              <span className={`text-transparent bg-clip-text bg-gradient-to-r ${skill.gradient} text-lg`}>✦</span>
+                              <span>{detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Click Indicator */}
+                    <div className="mt-6 text-center">
+                      <button className={`text-sm font-semibold transition-all duration-300 ${
+                        activeSkill === index 
+                          ? 'text-white' 
+                          : 'text-gray-500 group-hover:text-gray-300'
+                      }`}>
+                        {activeSkill === index ? '↑ Less Details' : '↓ View Details'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Why Choose Me */}
+        <section className="py-32 px-6 bg-gradient-to-b from-transparent via-blue-900/10 to-transparent">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-bold mb-16 text-center bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+              Why Work With Me?
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {[
+                { icon: "⚡", title: "Instant Impact", desc: "Hit the ground running from day one with proven expertise" },
+                { icon: "🌐", title: "Global Availability", desc: "UK-based with flexible hours across all timezones" },
+                { icon: "🚀", title: "Cutting-Edge Tech", desc: "Always using the latest AI and development tools" },
+                { icon: "💡", title: "Creative Solutions", desc: "Out-of-the-box thinking that solves complex problems" },
+                { icon: "🎓", title: "Continuous Learning", desc: "Staying ahead of industry trends and innovations" },
+                { icon: "🤝", title: "Risk-Free Start", desc: "Trial projects available to prove value before commitment" }
+              ].map((item, i) => (
+                <div key={i} className="p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-105">
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-xl font-bold mb-2 text-white">{item.title}</h3>
+                  <p className="text-gray-400">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="hire" className="py-32 px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative p-12 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/10 backdrop-blur-lg">
+              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-3xl blur-2xl opacity-20" />
+              
+              <div className="relative text-center">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+                  Let's Build Something Amazing
+                </h2>
+                
+                <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+                  Ready to transform your ideas into reality? Get in touch and let's discuss how I can help your project succeed.
+                </p>
+
+                <div className="space-y-4 mb-8">
+                  <a href="https://x.com/Lil_Osopher" target="_blank" rel="noopener noreferrer"
+                     className="block px-8 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 font-bold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
+                    🐦 Twitter: @Lil_Osopher
+                  </a>
+                  
+                  <a href="https://t.me/DeeChosenOne" target="_blank" rel="noopener noreferrer"
+                     className="block px-8 py-4 rounded-xl bg-gradient-to-r from-blue-400 to-blue-500 font-bold text-lg hover:shadow-2xl hover:shadow-blue-400/50 transition-all duration-300 hover:scale-105">
+                    💬 Telegram: @DeeChosenOne
+                  </a>
+                  
+                  <a href="mailto:deebestsolution@gmail.com"
+                     className="block px-8 py-4 rounded-xl border border-white/30 font-bold text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300">
+                    📧 deebestsolution@gmail.com
+                  </a>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-4 text-gray-400">
+                  <a href="https://x.com/_Pedastal_" target="_blank" rel="noopener noreferrer" className="hover:text-purple-400 transition-colors">Twitter: @_Pedastal_</a>
+                  <span>•</span>
+                  <a href="https://github.com/Philoso4er" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">GitHub</a>
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-white/10">
+                  <p className="text-gray-400 text-sm mb-4">Communities:</p>
+                  <div className="flex flex-wrap justify-center gap-4">
+                    <a href="https://x.com/TheDen_Alpha" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:text-emerald-300 transition-colors">
+                      The Den Alpha
+                    </a>
+                    <span className="text-gray-600">•</span>
+                    <a href="https://t.me/deechosenones" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+                      Dee Chosen Ones
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-12 px-6 border-t border-white/10">
+          <div className="max-w-7xl mx-auto text-center">
+            <p className="text-gray-400 mb-4">
+              Available for: Full-time • Part-time • Contract • Freelance • Trial Projects
+            </p>
+            <p className="text-gray-600 text-sm">
+              © 2025 The Philosopher • Remote Professional Based in UK • Global Reach
+            </p>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
